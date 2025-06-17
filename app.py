@@ -1,15 +1,15 @@
-import os
 from flask import Flask, request
 import telegram
+import os
 
 TOKEN = os.getenv("BOT_TOKEN")
 bot = telegram.Bot(token=TOKEN)
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def index():
-    return "Bot aktif di akar root."
+    return "Bot hidup!"
 
 @app.route(f"/{TOKEN}", methods=["POST"])
 def webhook():
@@ -17,7 +17,7 @@ def webhook():
     chat_id = update.message.chat.id
     text = update.message.text
 
-    reply = f"Salam! Kamu kata: {text}"
+    reply = f"Salam Boss! Kamu kata: {text}"
     bot.send_message(chat_id=chat_id, text=reply)
 
     return 'ok'
