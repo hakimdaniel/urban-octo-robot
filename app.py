@@ -1,31 +1,43 @@
 from flask import Flask, request
-import telegram
+from telegram import Bot, Update
 import os
 
+# Dapatkan token dari environment
 TOKEN = os.getenv("BOT_TOKEN")
-bot = telegram.Bot(token=TOKEN)
 
+# Print token untuk debug (buang bila production)
+print("TOKEN:", TOKEN)
+
+bot = Bot(token=TOKEN)
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "This bot is running right now."
+    return "Bot is alive!"
 
 @app.route(f"/{TOKEN}", methods=["POST"])
 def webhook():
-    data = request.get_json(force=True)
-    print("DATA DARI TELEGRAM:", data)
+    try:
+        data = request.get_json(force=True)
+        print("DATA DARI TELEGRAM:", data)
 
-    update = telegram.Update.de_json(data, bot)
+        update = Update.de_json(data, bot)
 
-    if update.message:
-        chat_id = update.message.chat.id
-        text = update.message.text
-        print(f"MSG: {text}")
+        if update.message and update.message.text:
+            chat_id = update.message.chat.id
+            text = update.message.text
+            print(f"[MSG] Chat ID: {chat_id}, Text: {text}")
 
-        reply = f"Salam Boss! Kamu kata: {text}"
-        bot.send_message(chat_id=chat_id, text=reply)
-    else:
-        print("Tiada mesej dalam update")
+            reply = f"Salam Boss! Kamu kata: {text}"
+            bot.send_message(chat_id=chat_id, text=reply)
+            print("[OK] Mesej dihantar")
+        else:
+            print("[INFO] Tiada mesej teks.")
 
-    return 'ok'
+    except Exception as e:
+        print("[ERROR]", e)
+
+    return "ok"
+
+if __name__ == "__main__":
+    app.run(debug=False, port=5000)
