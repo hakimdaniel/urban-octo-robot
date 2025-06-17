@@ -44,6 +44,15 @@ def telegram_webhook():
                 send_message(chat_id,"Welcome Elite !\nIm ready to serve !")
             elif text.lower() in ["hi","hello","hai","helo"]:
                 send_message(chat_id, "Hello, there 😁")
+            elif text == "/help":
+                send_message(chat_id,"""
+            [=== HELP COMMANDS ===]
+        /b64 enc <string>
+        /b64 dec <decoded>
+        /send <chat_id>
+        
+        powered by 0xAk1m
+            """)
 
             # Kalau ada pending forward
             elif chat_id in pending_forward and chat_id == ADMIN_ID:
@@ -55,7 +64,6 @@ def telegram_webhook():
                     send_photo(target, file_id, caption)
                 elif text:
                     send_message(target, text)
-
                 send_message(chat_id, f"✅ Forwarded to {target}")
                 del pending_forward[chat_id]
                 return "ok"
@@ -69,11 +77,11 @@ def telegram_webhook():
             elif text == "/help":
                 send_message(chat_id,"""
             [=== HELP COMMANDS ===]
-            
-            /b64 enc <string>
-            /b64 dec <decoded>
-
-            powered by 0xAk1m
+        /b64 enc <string>
+        /b64 dec <decoded>
+        Coming soon...
+        
+        powered by 0xAk1m
             """)
             elif text.startswith("/"):
                 send_message(chat_id, "Try /help to see info.")
