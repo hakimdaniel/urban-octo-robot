@@ -28,20 +28,7 @@ def telegram_webhook():
         chat_id = message["chat"]["id"]
         text = message.get("text")
         photo = message.get("photo")
-        
-    elif text.startswith("/b64 "):
-                cmd, action, *content = text.split()
-                content = " ".join(content)
-                if action == "enc":
-                    result = base64.b64encode(content.encode()).decode()
-                    send_message(chat_id, result)
-                elif action == "dec":
-                    try:
-                        result = base64.b64decode(content).decode()
-                    except:
-                        result = "❌ Invalid base64"
-                    send_message(chat_id, result)
-                    
+  
         # Hanya admin boleh akses
         if chat_id == ADMIN_ID:
             # Mula sesi forward ke target
@@ -76,10 +63,11 @@ def telegram_webhook():
             # Jika bukan command
             else:
                 send_message(chat_id, f"You said: {message['text']}")
-        elif text == "/start":
-            send_message(chat_id,"Hello, user!\nIm Bot created by 0xAk1m\n\nUse \help to command")
-        elif text == "/help":
-            send_message(chat_id,"""
+        else:
+            if text == "/start":
+                send_message(chat_id,"Hello, user!\nIm Bot created by 0xAk1m\n\nUse \help to command")
+            elif text == "/help":
+                send_message(chat_id,"""
             [=== HELP COMMANDS ===]
             
             /b64 enc <string>
@@ -87,9 +75,10 @@ def telegram_webhook():
 
             powered by 0xAk1m
             """)
-        elif text.startswith("/"):
-            send_message(chat_id, "Try /help to see info.")
-        else:
-            send_message(chat_id, f"You currently said: {message['text']}")
+            elif text.startswith("/"):
+                send_message(chat_id, "Try /help to see info.")
+            else:
+                send_message(chat_id, f"You currently said: {message['text']}")
     
     return "ok"
+    
