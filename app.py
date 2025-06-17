@@ -38,9 +38,10 @@ def telegram_webhook():
                     pending_forward[chat_id] = target_id
                     send_message(chat_id, "📨 Send me any message or image to forward to target.")
                 except:
-                    send_message(chat_id, "❌ Invalid format. Guna: /send <chatid>")
+                    send_message(chat_id, "❌ Invalid format. Try: /send <chatid>")
                 return "ok"
-
+            elif text.lower in ["hi","hello","hai","helo"]:
+                send_message(chat_id, "Hello, there 😁")
             # Kalau ada pending forward
             elif chat_id in pending_forward:
                 target = pending_forward[chat_id]
@@ -58,6 +59,8 @@ def telegram_webhook():
 
             # Jika bukan command
             else:
-                send_message(chat_id, "❌ Guna arahan: /send <chatid>")
+                send_message(chat_id, "Use command: /send <chatid>")
+        else:
+            send_message(chat_id, "Sorry you don't have access to interact with me :(")
     
     return "ok"
