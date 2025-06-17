@@ -54,6 +54,20 @@ def telegram_webhook():
         powered by 0xAk1m
             """)
 
+            elif text.startswith("/b64 "):
+                cmd, action, *content = text.split()
+                content = " ".join(content)
+                if action == "enc":
+                    result = base64.b64encode(content.encode()).decode()
+                    send_message(chat_id, result)
+                elif action == "dec":
+                    try:
+                        result = base64.b64decode(content).decode()
+                    except:
+                        result = "❌ Invalid base64"
+                    send_message(chat_id, result)
+                  
+
             # Kalau ada pending forward
             elif chat_id in pending_forward and chat_id == ADMIN_ID:
                 target = pending_forward[chat_id]
@@ -85,6 +99,19 @@ def telegram_webhook():
             """)
             elif text.startswith("/"):
                 send_message(chat_id, "Try /help to see info.")
+            elif text.startswith("/b64 "):
+                cmd, action, *content = text.split()
+                content = " ".join(content)
+                if action == "enc":
+                    result = base64.b64encode(content.encode()).decode()
+                    send_message(chat_id, result)
+                elif action == "dec":
+                    try:
+                        result = base64.b64decode(content).decode()
+                    except:
+                        result = "❌ Invalid base64"
+                    send_message(chat_id, result)
+                  
             else:
                 send_message(chat_id, f"You currently said: {message['text']}")
     
