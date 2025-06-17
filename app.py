@@ -1,13 +1,9 @@
 from flask import Flask, request
 from telegram import Bot, Update
 import os
+import asyncio
 
-# Dapatkan token dari environment
 TOKEN = os.getenv("BOT_TOKEN")
-
-# Print token untuk debug (buang bila production)
-print("TOKEN:", TOKEN)
-
 bot = Bot(token=TOKEN)
 app = Flask(__name__)
 
@@ -16,7 +12,7 @@ def index():
     return "Bot is alive!"
 
 @app.route(f"/{TOKEN}", methods=["POST"])
-def webhook():
+async def webhook():
     try:
         data = request.get_json(force=True)
         print("DATA DARI TELEGRAM:", data)
@@ -29,7 +25,7 @@ def webhook():
             print(f"[MSG] Chat ID: {chat_id}, Text: {text}")
 
             reply = f"Salam Boss! Kamu kata: {text}"
-            bot.send_message(chat_id=chat_id, text=reply)
+            await bot.send_message(chat_id=chat_id, text=reply)
             print("[OK] Mesej dihantar")
         else:
             print("[INFO] Tiada mesej teks.")
@@ -38,6 +34,3 @@ def webhook():
         print("[ERROR]", e)
 
     return "ok"
-
-if __name__ == "__main__":
-    app.run(debug=False, port=5000)
