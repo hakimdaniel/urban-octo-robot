@@ -3,7 +3,7 @@ import os, requests
 
 app = Flask(__name__)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID"))  # Ganti dengan chatid admin kau
+ADMIN_ID = int(os.getenv("ADMIN_ID") or 7688576264)  # Ganti dengan chatid admin kau
 
 # Simpan target sementara
 pending_forward = {}
