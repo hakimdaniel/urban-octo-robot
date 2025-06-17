@@ -73,7 +73,7 @@ def telegram_webhook():
                 send_message(chat_id, f"You said: {message['text']}")
         else:
             if text == "/start":
-                send_message(chat_id,"Hello, user!\nIm Bot created by 0xAk1m\n\nUse \help to command")
+                send_message(chat_id,"Hello, user!\nIm Bot created by 0xAk1m\n\nUse /help to command")
             elif text == "/help":
                 send_message(chat_id,"""
             [=== HELP COMMANDS ===]
