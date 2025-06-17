@@ -30,7 +30,7 @@ def telegram_webhook():
         photo = message.get("photo")
 
         # Hanya admin boleh akses
-        if chat_id == ADMIN_ID:
+        if True:
             # Mula sesi forward ke target
             if text and text.startswith("/send "):
                 try:
@@ -41,7 +41,7 @@ def telegram_webhook():
                     send_message(chat_id, "❌ Invalid format. Try: /send <chatid>")
                 return "ok"
             elif text == "/start" and chat_id == ADMIN_ID:
-                send_message(chat_id,"Welcome Elite !\n ready to serve !")
+                send_message(chat_id,"Welcome Elite !\nIm ready to serve !")
             elif text.lower() in ["hi","hello","hai","helo"]:
                 send_message(chat_id, "Hello, there 😁")
 
@@ -58,7 +58,7 @@ def telegram_webhook():
                         result = "❌ Invalid base64"
                     send_message(chat_id, result)
             # Kalau ada pending forward
-            elif chat_id in pending_forward:
+            elif chat_id in pending_forward and chat_id == ADMIN_ID:
                 target = pending_forward[chat_id]
 
                 if photo:
@@ -75,7 +75,20 @@ def telegram_webhook():
             # Jika bukan command
             else:
                 send_message(chat_id, f"You said: {message['text']}")
+        elif text == "/start":
+            send_message(chat_id,"Hello, user!\nIm Bot created by 0xAk1m\n\nUse \help to command")
+        elif text == "/help":
+            send_message(chat_id,"""
+            [=== HELP COMMANDS ===]
+            
+            /b64 enc <string>
+            /b64 dec <decoded>
+
+            powered by 0xAk1m
+            """)
+        elif text.startswith("/"):
+            send_message(chat_id, "Try /help to see info.")
         else:
-            send_message(chat_id, "Sorry you don't have access to interact with me :(")
+            send_message(chat_id, f"You currently said: {message['text']}")
     
     return "ok"
