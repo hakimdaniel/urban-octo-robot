@@ -1,36 +1,29 @@
 from flask import Flask, request
-from telegram import Bot, Update
-import os
-import asyncio
+import requests
 
-TOKEN = os.getenv("BOT_TOKEN")
-bot = Bot(token=TOKEN)
 app = Flask(__name__)
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-@app.route("/")
-def index():
-    return "Bot is alive!"
+def send_message(chat_id, text):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": text
+    }
+    requests.post(url, json=payload)
 
-@app.route(f"/{TOKEN}", methods=["POST"])
-async def webhook():
-    try:
-        data = request.get_json(force=True)
-        print("DATA DARI TELEGRAM:", data)
+@app.route("/", methods=["POST"])
+def telegram_webhook():
+    data = request.get_json()
+    if "message" in data:
+        chat_id = data["message"]["chat"]["id"]
+        text = data["message"].get("text", "").lower()
 
-        update = Update.de_json(data, bot)
-
-        if update.message and update.message.text:
-            chat_id = update.message.chat.id
-            text = update.message.text
-            print(f"[MSG] Chat ID: {chat_id}, Text: {text}")
-
-            reply = f"Salam Boss! Kamu kata: {text}"
-            await bot.send_message(chat_id=chat_id, text=reply)
-            print("[OK] Mesej dihantar")
+        if "hello" in text:
+            send_message(chat_id, "Hi there!")
+        elif "bye" in text:
+            send_message(chat_id, "Goodbye!")
         else:
-            print("[INFO] Tiada mesej teks.")
-
-    except Exception as e:
-        print("[ERROR]", e)
+            send_message(chat_id, "I don't understand.")
 
     return "ok"
