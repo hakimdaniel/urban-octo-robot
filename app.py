@@ -97,8 +97,6 @@ def telegram_webhook():
         
         powered by 0xAk1m
             """)
-            elif text.startswith("/"):
-                send_message(chat_id, "Try /help to see info.")
             elif text.startswith("/b64 "):
                 cmd, action, *content = text.split()
                 content = " ".join(content)
@@ -111,7 +109,8 @@ def telegram_webhook():
                     except:
                         result = "❌ Invalid base64"
                     send_message(chat_id, result)
-                  
+            elif text.startswith("/"):
+                send_message(chat_id, "Try /help to see info.")                  
             else:
                 send_message(chat_id, f"You currently said: {message['text']}")
     
