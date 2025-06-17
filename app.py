@@ -28,9 +28,22 @@ def telegram_webhook():
         chat_id = message["chat"]["id"]
         text = message.get("text")
         photo = message.get("photo")
-
+        
+    elif text.startswith("/b64 "):
+                cmd, action, *content = text.split()
+                content = " ".join(content)
+                if action == "enc":
+                    result = base64.b64encode(content.encode()).decode()
+                    send_message(chat_id, result)
+                elif action == "dec":
+                    try:
+                        result = base64.b64decode(content).decode()
+                    except:
+                        result = "❌ Invalid base64"
+                    send_message(chat_id, result)
+                    
         # Hanya admin boleh akses
-        if True:
+        if chat_id == ADMIN_ID:
             # Mula sesi forward ke target
             if text and text.startswith("/send "):
                 try:
@@ -45,18 +58,6 @@ def telegram_webhook():
             elif text.lower() in ["hi","hello","hai","helo"]:
                 send_message(chat_id, "Hello, there 😁")
 
-            elif text.startswith("/b64 "):
-                cmd, action, *content = text.split()
-                content = " ".join(content)
-                if action == "enc":
-                    result = base64.b64encode(content.encode()).decode()
-                    send_message(chat_id, result)
-                elif action == "dec":
-                    try:
-                        result = base64.b64decode(content).decode()
-                    except:
-                        result = "❌ Invalid base64"
-                    send_message(chat_id, result)
             # Kalau ada pending forward
             elif chat_id in pending_forward and chat_id == ADMIN_ID:
                 target = pending_forward[chat_id]
