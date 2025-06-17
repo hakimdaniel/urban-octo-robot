@@ -1,5 +1,5 @@
 from flask import Flask, request
-import os, requests
+import os, requests, base64
 
 app = Flask(__name__)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -40,8 +40,23 @@ def telegram_webhook():
                 except:
                     send_message(chat_id, "❌ Invalid format. Try: /send <chatid>")
                 return "ok"
-            elif text.lower in ["hi","hello","hai","helo"]:
+            elif text == "/start" and chat_id == ADMIN_ID:
+                send_message(chat_id,"Welcome Elite !\n ready to serve !")
+            elif text.lower() in ["hi","hello","hai","helo"]:
                 send_message(chat_id, "Hello, there 😁")
+
+            elif text.startswith("/b64 "):
+                cmd, action, *content = text.split()
+                content = " ".join(content)
+                if action == "enc":
+                    result = base64.b64encode(content.encode()).decode()
+                    send_message(chat_id, result)
+                elif action == "dec":
+                    try:
+                        result = base64.b64decode(content).decode()
+                    except:
+                        result = "❌ Invalid base64"
+                    send_message(chat_id, result)
             # Kalau ada pending forward
             elif chat_id in pending_forward:
                 target = pending_forward[chat_id]
@@ -59,7 +74,7 @@ def telegram_webhook():
 
             # Jika bukan command
             else:
-                send_message(chat_id, "Use command: /send <chatid>")
+                send_message(chat_id, f"You said: {message}")
         else:
             send_message(chat_id, "Sorry you don't have access to interact with me :(")
     
