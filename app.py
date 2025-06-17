@@ -74,7 +74,7 @@ def telegram_webhook():
 
             # Jika bukan command
             else:
-                send_message(chat_id, f"You said: {message}")
+                send_message(chat_id, f"You said: {message['text']}")
         else:
             send_message(chat_id, "Sorry you don't have access to interact with me :(")
     
